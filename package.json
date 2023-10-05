@@ -29,6 +29,8 @@
     "@nestjs/passport": "^10.0.1",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.1.11",
+    "@willsoto/nestjs-prometheus": "^5.5.1",
+    "aws-sdk": "^2.1467.0",
     "bcrypt": "^5.1.1",
     "class-validator": "^0.11.1",
     "mongoose": "^7.4.1",

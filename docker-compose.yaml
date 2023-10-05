@@ -1,0 +1,69 @@
+version: "3.9"
+services:
+
+  api:
+    build: 
+      context: .
+      dockerfile: ./dockerfile
+      target: development
+    volumes:
+      - app-data:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 3000:3000
+    depends_on:
+      - database
+    env_file: .env 
+    environment:
+      NODE_ENV: development
+    networks:
+      - dev
+    command: pnpm run start:dev
+
+  database:
+    image: mongo:latest
+    restart: always
+    volumes:
+      - database-data:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - dev
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - prometheus-data:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=365d'
+    ports:
+      - '9090:9090'
+    networks:
+      - dev
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: monitoring_grafana
+    restart: unless-stopped
+    links:
+      - prometheus:prometheus
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=12345
+    ports:
+      - '3001:3000'
+    networks:
+      - dev
+
+volumes:
+  app-data:
+  database-data:
+  grafana-data:
+  prometheus-data:
+
+networks:
+  dev: 
