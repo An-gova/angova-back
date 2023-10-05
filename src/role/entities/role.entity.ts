@@ -8,3 +8,4 @@ export class Role extends Document {
 }
 
 export const RoleModel = SchemaFactory.createForClass(Role);
+export type RoleDocument = Role & Document;

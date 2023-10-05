@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
 
 @Controller('role')
 export class RoleController {
@@ -56,7 +55,7 @@ export class RoleController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
-      await this.roleService.findOne(+id);
+      await this.roleService.findOne(id);
     } catch (error) {
       throw new HttpException(
         {
@@ -74,7 +73,7 @@ export class RoleController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
-      await this.roleService.remove(+id);
+      await this.roleService.remove(id);
     } catch (error) {
       throw new HttpException(
         {

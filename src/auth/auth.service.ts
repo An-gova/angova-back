@@ -5,6 +5,9 @@ import {UserService} from "../user/user.service";
 import {ConfigService} from "@nestjs/config";
 import {LoginDto} from "./dto/login.dto";
 import {RefreshTokenDto} from "./dto/refresh-token.dto"
+import {Role} from "../role/entities/role.entity";
+import {name} from "ts-jest/dist/transformers/hoist-jest";
+import {rootCertificates} from "tls";
 
 @Injectable()
 export class AuthService {
@@ -30,7 +33,7 @@ export class AuthService {
             ...SignupDto,
             password: hash,
         });
-        const tokens = await this.getTokens(user._id, user.email);
+        const tokens = await this.getTokens(user._id, user.role);
         await this.refresh(user._id, tokens.refreshToken);
         return tokens;
     }
@@ -47,7 +50,8 @@ export class AuthService {
         if (!isPasswordValid) {
             throw new HttpException({message: 'email or password is/are incorrect'}, HttpStatus.UNAUTHORIZED);
         }
-        const tokens = await this.getTokens(user._id, user.email);
+        const tokens = await this.getTokens(user._id, user.role._id);
+        console.log(user)
         await this.refresh(user._id, tokens.refreshToken);
         return {tokens};
     }
@@ -67,13 +71,13 @@ export class AuthService {
         return { newAccessToken, newRefreshToken };
     }
 
-    async getTokens(userId: string, username: string)
-    {
+    async getTokens(userId: string, roleId: Role) {
+        
         const [accessToken, refreshToken] = await Promise.all([
             this.jwtService.signAsync(
                 {
-                    sub: userId,
-                    username,
+                     userId,
+                     roleId,
                 },
                 {
                     secret: this.configService.get<string>('JWT_SECRET'),
@@ -82,8 +86,8 @@ export class AuthService {
             ),
             this.jwtService.signAsync(
                 {
-                    sub: userId,
-                    username,
+                     userId,
+                     roleId,
                 },
                 {
                     secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
@@ -91,11 +95,14 @@ export class AuthService {
                 },
             ),
         ]);
+
         return {
             accessToken,
             refreshToken,
         };
     }
+
+
 }
 
 

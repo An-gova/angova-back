@@ -17,10 +17,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
 
-  @Post()
-  create(@Body() SignupDto: SignupDto) {
-    return this.userService.create(SignupDto);
-  }
+
 
   @Get()
   findAll() {
