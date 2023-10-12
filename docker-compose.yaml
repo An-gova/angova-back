@@ -6,19 +6,17 @@ services:
       context: .
       dockerfile: ./dockerfile
       target: development
+      #target: production
     volumes:
-      - app-data:/usr/src/app
+      - ./:/usr/src/app
       - /usr/src/app/node_modules
     ports:
       - 3000:3000
     depends_on:
       - database
     env_file: .env 
-    environment:
-      NODE_ENV: development
     networks:
       - dev
-    command: pnpm run start:dev
 
   database:
     image: mongo:latest
@@ -60,7 +58,6 @@ services:
       - dev
 
 volumes:
-  app-data:
   database-data:
   grafana-data:
   prometheus-data:
