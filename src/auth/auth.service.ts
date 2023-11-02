@@ -6,8 +6,7 @@ import {ConfigService} from "@nestjs/config";
 import {LoginDto} from "./dto/login.dto";
 import {RefreshTokenDto} from "./dto/refresh-token.dto"
 import {Role} from "../role/entities/role.entity";
-import {name} from "ts-jest/dist/transformers/hoist-jest";
-import {rootCertificates} from "tls";
+
 
 @Injectable()
 export class AuthService {
@@ -72,7 +71,7 @@ export class AuthService {
     }
 
     async getTokens(userId: string, roleId: Role) {
-        
+
         const [accessToken, refreshToken] = await Promise.all([
             this.jwtService.signAsync(
                 {

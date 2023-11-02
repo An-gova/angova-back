@@ -11,5 +11,6 @@ export class UpdateUserDto extends PartialType(SignupDto) {
   password?: string;
   @ApiProperty()
   role?: string;
+  @ApiProperty()
   refreshToken?:string;
 }

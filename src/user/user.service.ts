@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { SignupDto } from '../auth/dto/signup.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument } from './entities/user.entity';
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UserService {
@@ -37,5 +38,15 @@ export class UserService {
 
   async remove(id: string): Promise<UserDocument> {
     return this.userModel.findByIdAndDelete(id).exec();
+  }
+
+  async compareRefreshTokens(userId: string, clientRefreshToken: string): Promise<boolean> {
+    const user = await this.findById(userId);
+    if (!user) {
+      return false;
+    }
+    console.log(clientRefreshToken+ "    ///  " + user.refreshToken)
+
+    return await bcrypt.compare(clientRefreshToken, user.refreshToken);
   }
 }
