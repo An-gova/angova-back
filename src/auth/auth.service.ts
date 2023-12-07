@@ -59,14 +59,29 @@ export class AuthService {
         return this.userService.update(userId, {refreshToken: null});
     }
 
-    async refresh(userId: string, RefreshTokenDto: string)
+    async refresh(userId: string, RefreshToken: string)
     {
-        const hashedRefreshToken = await this.hashData(RefreshTokenDto);
+        console.log(" kepassa ? :" + RefreshToken.toString());
+        const hashedRefreshToken = await this.hashData(RefreshToken);
         await this.userService.update(userId, {
             refreshToken: hashedRefreshToken,
         });
-        const newAccessToken = this.jwtService.sign({ sub: userId });
-        const newRefreshToken = this.jwtService.sign({ sub: userId }, { expiresIn: '7d' });
+        const newAccessToken = await this.jwtService.signAsync(
+            {
+                userId,
+            }, {
+                secret: this.configService.get<string>('JWT_SECRET'),
+                expiresIn: '15m',
+            },
+        );
+        const newRefreshToken = await this.jwtService.signAsync(
+            {
+                userId
+            },
+            {
+                expiresIn: '7d',
+                secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+            });
         return { newAccessToken, newRefreshToken };
     }
 

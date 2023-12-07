@@ -34,29 +34,23 @@ export class AuthController {
             const user = await this.userService.findById(refreshDto.userId);
 
             if (!user) {
-                throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+                throw new HttpException('Unauthorized, user not found', HttpStatus.UNAUTHORIZED);
             }
-
               console.log(refreshDto.userId);
               console.log(refreshDto.refreshToken);
-
-
             const tokensMatch = await this.userService.compareRefreshTokens(
                 refreshDto.userId,
                 refreshDto.refreshToken,
             );
-
             console.log(tokensMatch)
             if (!tokensMatch) {
 
                 throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
             }
-
             const newAccessToken = await this.authService.refresh(
                 refreshDto.userId,
                 refreshDto.refreshToken,
             );
-
             return { accessToken: newAccessToken };
         } catch (error) {
             throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);

@@ -1,4 +1,4 @@
-import { Logger, Module } from '@nestjs/common';
+import { Logger, Module, NestModule, MiddlewareConsumer  } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -10,6 +10,7 @@ import { UserModel } from './user/entities/user.entity';
 import { RoleModel } from './role/entities/role.entity';
 import { PrometheusModule } from "@willsoto/nestjs-prometheus";
 import { StorageModule } from './storage/storage.module';
+import { RolesMiddleware } from './middlewares/roles.middleware';
 
 
 @Module({
@@ -38,9 +39,15 @@ import { StorageModule } from './storage/storage.module';
     
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, RolesMiddleware],
 })
-export class AppModule {}
+export class AppModule implements NestModule{
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RolesMiddleware).forRoutes('code-sessions');
+  }
+
+}
+
 function getDbConnectionString() {
   const dbConnectionString = process.env.DB_URI;
   const logger = new Logger('AppModule');
