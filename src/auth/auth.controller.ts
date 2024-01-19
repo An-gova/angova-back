@@ -10,6 +10,7 @@ export class AuthController {
     constructor(private authService: AuthService,
                 private userService: UserService,)
     {
+
     }
 
     @Post('/signup')
@@ -19,13 +20,12 @@ export class AuthController {
 
     @Post('/login')
     login(@Body() data: LoginDto) {
-        console.log("test")
         return this.authService.login(data)
     }
 
     @Get('/logout')
     logout(@Req() req: Request) {
-        this.authService.logout(req['sub']);
+        this.authService.logout(req['sub']).then(r => console.log("logout ok"));
     }
 
     @Post('/refresh')

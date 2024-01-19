@@ -43,9 +43,8 @@ import { RolesMiddleware } from './middlewares/roles.middleware';
 })
 export class AppModule implements NestModule{
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(RolesMiddleware).forRoutes('code-sessions');
+    consumer.apply(RolesMiddleware).forRoutes('session');
   }
-
 }
 
 function getDbConnectionString() {

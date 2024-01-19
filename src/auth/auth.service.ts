@@ -61,7 +61,6 @@ export class AuthService {
 
     async refresh(userId: string, RefreshToken: string)
     {
-        console.log(" kepassa ? :" + RefreshToken.toString());
         const hashedRefreshToken = await this.hashData(RefreshToken);
         await this.userService.update(userId, {
             refreshToken: hashedRefreshToken,
