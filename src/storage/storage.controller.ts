@@ -9,8 +9,11 @@ export class StorageController {
 
     @Get('/download')
     async downloadFile(@Query('key') key: string, @Res() res: Response): Promise<S3.Body | void> {
-        const { Body, ContentType } = await this.storageService.download(key);
-        res.setHeader('Content-Type', ContentType || 'application/octet-stream');
-        res.send(Body);
+        const signedURL =  await this.storageService.download(key);
+        if (signedURL) {
+            res.json({ url: signedURL }); // Send the signed URL as JSON
+        } else {
+            res.status(404).send('File not found'); 
+        }
     }
 }
