@@ -1,38 +1,48 @@
-FROM node:alpine AS development
+FROM node:20-alpine3.17 as development
 
-# Install PNPM globally
+ENV NODE_ENV development
+ 
 RUN npm install -g pnpm
 
 WORKDIR /usr/src/app
 
-COPY package*.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN pnpm i
+RUN pnpm fetch --dev
 
-COPY . . 
+RUN pnpm i --frozen-lockfile
+ 
+COPY --chown=node:node . .
 
 EXPOSE 3000
+
+CMD ["pnpm", "run", "start:dev" ]
+
+FROM node:20-alpine3.17 as build
+
+ENV NODE_ENV production
+
+RUN npm install -g pnpm
+
+WORKDIR /usr/src/app
+
+COPY --chown=node:node package.json pnpm-lock.yaml ./
+
+COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
+
+COPY --chown=node:node . .
 
 RUN pnpm run build
 
-FROM node:alpine as production
+RUN pnpm i --prod --frozen-lockfile && pnpm prune --prod
 
-# Install PNPM globally
-RUN npm install -g pnpm
+USER node
 
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
+FROM node:20-alpine3.17 as production
 
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-
-RUN pnpm i --only=prod
-
-COPY . .
+COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
+COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 
 EXPOSE 3000
-
-COPY --from=development /usr/src/app/dist ./dist
 
 CMD ["node", "dist/main"]
