@@ -24,7 +24,7 @@ export class RoleController {
       throw new HttpException(
         {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: "Error : can't create user",
+          error: "Error : can't create role",
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
         {
@@ -42,7 +42,7 @@ export class RoleController {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
-          error: 'No Users',
+          error: 'No Roles',
         },
         HttpStatus.NOT_FOUND,
         {
@@ -60,7 +60,7 @@ export class RoleController {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
-          error: 'Users not found',
+          error: 'Role not found',
         },
         HttpStatus.NOT_FOUND,
         {
@@ -78,7 +78,7 @@ export class RoleController {
       throw new HttpException(
         {
           status: HttpStatus.BAD_REQUEST,
-          error: "Can't remove the user",
+          error: "Can't remove the Role",
         },
         HttpStatus.BAD_REQUEST,
         {
