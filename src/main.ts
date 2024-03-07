@@ -12,7 +12,7 @@ async function bootstrap() {
         .setVersion('1.0')
         .addTag('Anturvoi')
         .addBearerAuth(
-            { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+            { type: 'http', scheme: 'Bearer', bearerFormat: 'JWT' },
             'access-token',
         )
         .build();
