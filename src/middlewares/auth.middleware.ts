@@ -6,9 +6,10 @@ export class JwtAuthMiddleware implements NestMiddleware {
     constructor(private readonly jwtService: JwtService) {}
 
     async use(req: any, res: any, next: (error?: any) => void) {
+
+        //by pass des routes de login
         const loginRoutes = ['/auth/login', '/auth/signup'];
         const isLoginRoute = loginRoutes.some(route => req.url.includes(route));
-
         if (isLoginRoute) {
             return next();
         }
@@ -27,9 +28,14 @@ export class JwtAuthMiddleware implements NestMiddleware {
             return res.status(401).send('Token not found');
         }
 
+        const decoded = await this.jwtService.verifyAsync(token);
+        console.log('decoded token:', decoded);
+
         try {
             const decoded = await this.jwtService.verifyAsync(token);
             req.user = decoded;
+            console.log('decoded token:', decoded);
+
             console.log('Authorization header:', authHeader);
             console.log('Token:', token);
             console.log('Decoded token:', decoded);

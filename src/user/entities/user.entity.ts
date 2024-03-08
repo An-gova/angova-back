@@ -3,7 +3,6 @@ import mongoose  from 'mongoose';
 import { Document} from "mongoose";
 import { Role } from '../../role/entities/role.entity';
 
-
 export type UserDocument = User & Document;
 
 @Schema({

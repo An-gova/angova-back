@@ -24,6 +24,7 @@ export class RoleService {
 
   async findOne(id: string): Promise<RoleDocument> {
     const role = await this.roleModel.findById(id).exec();
+    console.log('Role fetched from database:', role);
     if (!role) {
       throw new NotFoundException(`Role with ID ${id} not found`);
     }
