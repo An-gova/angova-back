@@ -53,7 +53,8 @@ export class AuthController {
             );
             return { accessToken: newAccessToken };
         } catch (error) {
-            throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+            console.log(error);
+            throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED, error);
         }
     }
 }
