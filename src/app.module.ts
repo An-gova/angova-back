@@ -10,10 +10,10 @@ import { UserModel } from './user/entities/user.entity';
 import { RoleModel } from './role/entities/role.entity';
 import { PrometheusModule } from "@willsoto/nestjs-prometheus";
 import { StorageModule } from './storage/storage.module';
-import { JwtService } from "@nestjs/jwt";
 import { JwtModule } from '@nestjs/jwt';
 import { JwtAuthMiddleware } from "./middlewares/auth.middleware";
 import { RolesMiddleware } from './middlewares/roles.middleware';
+import {FixturesModule} from "./fixtures/fixtures.modules";
 
 
 @Module({
@@ -23,6 +23,7 @@ import { RolesMiddleware } from './middlewares/roles.middleware';
         UserModule,
         RoleModule,
         AuthModule,
+        FixturesModule,
         ConfigModule.forRoot(),
         MongooseModule.forRoot(getDbConnectionString(), {
             connectionFactory: (connection) => {

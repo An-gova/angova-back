@@ -1,5 +1,4 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { RoleService } from '../role/role.service';
 
@@ -12,7 +11,7 @@ export class RolesMiddleware implements NestMiddleware {
 
     async use(req: any, res: any, next: (error?: any) => void) {
         // Exclure les routes de login
-        const loginRoutes = ['/auth/login', '/auth/signup', '/auth/refresh'];
+        const loginRoutes = ['/auth/login', '/auth/signup', '/auth/refresh', '/fixtures/generate'];
         const isLoginRoute = loginRoutes.some(route => req.url.includes(route));
         if (isLoginRoute) {
             return next();

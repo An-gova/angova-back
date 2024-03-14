@@ -15,6 +15,12 @@ export class UserService {
     return createdUser.save();
   }
 
+
+  async createMultipleUsers(users: Partial<UserDocument>[]): Promise<Partial<UserDocument>[]> {
+    return this.userModel.insertMany(users);
+  }
+
+
   async findAll(): Promise<UserDocument[]> {
     return this.userModel.find().exec();
   }
@@ -26,6 +32,8 @@ export class UserService {
   async findByEmail(email: string): Promise<UserDocument> {
     return this.userModel.findOne({ email }).exec();
   }
+
+
 
   async update(
       id: string,
