@@ -6,8 +6,7 @@ import {ConfigService} from "@nestjs/config";
 import {LoginDto} from "./dto/login.dto";
 import {RefreshTokenDto} from "./dto/refresh-token.dto"
 import {Role} from "../role/entities/role.entity";
-import {name} from "ts-jest/dist/transformers/hoist-jest";
-import {rootCertificates} from "tls";
+
 
 @Injectable()
 export class AuthService {
@@ -60,19 +59,33 @@ export class AuthService {
         return this.userService.update(userId, {refreshToken: null});
     }
 
-    async refresh(userId: string, RefreshTokenDto: string)
+    async refresh(userId: string, RefreshToken: string)
     {
-        const hashedRefreshToken = await this.hashData(RefreshTokenDto);
+        const hashedRefreshToken = await this.hashData(RefreshToken);
         await this.userService.update(userId, {
             refreshToken: hashedRefreshToken,
         });
-        const newAccessToken = this.jwtService.sign({ sub: userId });
-        const newRefreshToken = this.jwtService.sign({ sub: userId }, { expiresIn: '7d' });
+        const newAccessToken = await this.jwtService.signAsync(
+            {
+                userId,
+            }, {
+                secret: this.configService.get<string>('JWT_SECRET'),
+                expiresIn: '15m',
+            },
+        );
+        const newRefreshToken = await this.jwtService.signAsync(
+            {
+                userId
+            },
+            {
+                expiresIn: '7d',
+                secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+            });
         return { newAccessToken, newRefreshToken };
     }
 
     async getTokens(userId: string, roleId: Role) {
-        
+
         const [accessToken, refreshToken] = await Promise.all([
             this.jwtService.signAsync(
                 {

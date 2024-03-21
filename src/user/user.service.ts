@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { SignupDto } from '../auth/dto/signup.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument } from './entities/user.entity';
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UserService {
@@ -13,6 +14,12 @@ export class UserService {
     const createdUser = new this.userModel(SignupDto);
     return createdUser.save();
   }
+
+
+  async createMultipleUsers(users: Partial<UserDocument>[]): Promise<Partial<UserDocument>[]> {
+    return this.userModel.insertMany(users);
+  }
+
 
   async findAll(): Promise<UserDocument[]> {
     return this.userModel.find().exec();
@@ -26,6 +33,8 @@ export class UserService {
     return this.userModel.findOne({ email }).exec();
   }
 
+
+
   async update(
       id: string,
       updateUserDto: UpdateUserDto,
@@ -36,6 +45,15 @@ export class UserService {
   }
 
   async remove(id: string): Promise<UserDocument> {
-    return this.userModel.findByIdAndDelete(id).exec();
+    return this.userModel.findByIdAndDelete(id).lean().exec();
+  }
+
+
+  async compareRefreshTokens(userId: string, clientRefreshToken: string): Promise<boolean> {
+    const user = await this.findById(userId);
+    if (!user) {
+      return false;
+    }
+    return await bcrypt.compare(clientRefreshToken, user.refreshToken);
   }
 }

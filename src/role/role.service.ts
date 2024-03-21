@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Role, RoleDocument } from './entities/role.entity'; // Importez RoleDocument
+import { Role, RoleDocument } from './entities/role.entity';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 
@@ -9,7 +9,9 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 export class RoleService {
   constructor(
       @InjectModel(Role.name) private readonly roleModel: Model<RoleDocument>,
-  ) {}
+  ) {
+
+  }
 
   async create(createRoleDto: CreateRoleDto): Promise<Role> {
     const createdRole = new this.roleModel(createRoleDto);
@@ -20,15 +22,16 @@ export class RoleService {
     return this.roleModel.find().exec();
   }
 
-  async findOne(id: string): Promise<RoleDocument> { // Utilisez RoleDocument ici
+  async findOne(id: string): Promise<RoleDocument> {
     const role = await this.roleModel.findById(id).exec();
+    console.log('Role fetched from database:', role);
     if (!role) {
       throw new NotFoundException(`Role with ID ${id} not found`);
     }
     return role;
   }
 
-  async update(id: string, updateRoleDto: UpdateRoleDto): Promise<RoleDocument> { // Utilisez RoleDocument ici
+  async update(id: string, updateRoleDto: UpdateRoleDto): Promise<RoleDocument> {
     const updatedRole = await this.roleModel.findByIdAndUpdate(
         id,
         updateRoleDto,
@@ -40,7 +43,7 @@ export class RoleService {
     return updatedRole;
   }
 
-  async remove(id: string): Promise<RoleDocument> { // Utilisez RoleDocument ici
+  async remove(id: string): Promise<RoleDocument> {
     const removedRole = await this.roleModel.findByIdAndRemove(id);
     if (!removedRole) {
       throw new NotFoundException(`Role with ID ${id} not found`);

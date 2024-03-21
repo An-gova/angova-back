@@ -11,11 +11,13 @@ import {
 } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
+import {ApiBearerAuth} from "@nestjs/swagger";
 
 @Controller('role')
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
+  @ApiBearerAuth('accessToken')
   @Post()
   async create(@Body() createRoleDto: CreateRoleDto) {
     try {
@@ -24,7 +26,7 @@ export class RoleController {
       throw new HttpException(
         {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: "Error : can't create user",
+          error: "Error : can't create role",
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
         {
@@ -34,6 +36,7 @@ export class RoleController {
     }
   }
 
+  @ApiBearerAuth('accessToken')
   @Get()
   async findAll() {
     try {
@@ -42,7 +45,7 @@ export class RoleController {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
-          error: 'No Users',
+          error: 'No Roles',
         },
         HttpStatus.NOT_FOUND,
         {
@@ -52,6 +55,7 @@ export class RoleController {
     }
   }
 
+  @ApiBearerAuth('accessToken')
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
@@ -60,7 +64,7 @@ export class RoleController {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
-          error: 'Users not found',
+          error: 'Role not found',
         },
         HttpStatus.NOT_FOUND,
         {
@@ -70,6 +74,7 @@ export class RoleController {
     }
   }
 
+  @ApiBearerAuth('accessToken')
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
@@ -78,7 +83,7 @@ export class RoleController {
       throw new HttpException(
         {
           status: HttpStatus.BAD_REQUEST,
-          error: "Can't remove the user",
+          error: "Can't remove the Role",
         },
         HttpStatus.BAD_REQUEST,
         {

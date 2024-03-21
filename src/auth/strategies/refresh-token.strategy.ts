@@ -15,7 +15,6 @@ export class RefreshTokenStrategy extends PassportStrategy(
             passReqToCallback: true,
         });
     }
-
     validate(req: Request, payload: any) {
         const refreshToken = req.get('Authorization').replace('Bearer', '').trim();
         return { ...payload, refreshToken };
