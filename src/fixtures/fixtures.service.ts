@@ -13,26 +13,26 @@ export class FixturesService {
         return bcrypt.hash(data, 10);
     }
     async generateFixtures(): Promise<void> {
-        const passwordhash = await this.hashData("123")
+        const passwordHash = await this.hashData("123")
         const users = [
             {
                 username: 'Admin',
                 email: 'Admin@fixture.com',
-                password: passwordhash,
+                password: passwordHash,
                 role: '65040ec528f750d4de3bcdd5' ,
                 refreshToken: 'null',
             },
             {
                 username: 'Manager',
                 email: 'Manager@fixture.com',
-                password: passwordhash,
+                password: passwordHash,
                 role:'65040ec528f750d4de3bcdd6' ,
                 refreshToken: 'null',
             },
             {
                 username: 'User',
                 email: 'User@fixture.com',
-                password: passwordhash,
+                password: passwordHash,
                 role: '65040ec528f750d4de3bcdd7',
                 refreshToken: 'null',
             },

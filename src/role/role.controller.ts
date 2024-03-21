@@ -11,11 +11,13 @@ import {
 } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
+import {ApiBearerAuth} from "@nestjs/swagger";
 
 @Controller('role')
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
+  @ApiBearerAuth('accessToken')
   @Post()
   async create(@Body() createRoleDto: CreateRoleDto) {
     try {
@@ -34,6 +36,7 @@ export class RoleController {
     }
   }
 
+  @ApiBearerAuth('accessToken')
   @Get()
   async findAll() {
     try {
@@ -52,6 +55,7 @@ export class RoleController {
     }
   }
 
+  @ApiBearerAuth('accessToken')
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
@@ -70,6 +74,7 @@ export class RoleController {
     }
   }
 
+  @ApiBearerAuth('accessToken')
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {

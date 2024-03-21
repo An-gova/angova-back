@@ -14,6 +14,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtAuthMiddleware } from "./middlewares/auth.middleware";
 import { RolesMiddleware } from './middlewares/roles.middleware';
 import {FixturesModule} from "./fixtures/fixtures.modules";
+import {JwtExpiredFilter} from "./exceptions/jwt-expired.filter";
+import {APP_FILTER} from "@nestjs/core";
 
 
 @Module({
@@ -23,7 +25,7 @@ import {FixturesModule} from "./fixtures/fixtures.modules";
         UserModule,
         RoleModule,
         AuthModule,
-        FixturesModule,
+                FixturesModule,
         ConfigModule.forRoot(),
         MongooseModule.forRoot(getDbConnectionString(), {
             connectionFactory: (connection) => {
@@ -46,17 +48,24 @@ import {FixturesModule} from "./fixtures/fixtures.modules";
         }),
     ],
     controllers: [AppController],
-    providers: [AppService, RolesMiddleware, JwtAuthMiddleware],
+    providers: [AppService, RolesMiddleware, JwtAuthMiddleware,{
+        provide: APP_FILTER,
+        useClass: JwtExpiredFilter,
+    },],
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
             .apply(JwtAuthMiddleware)
-            .forRoutes({path: '*', method: RequestMethod.ALL});
+            .forRoutes(
+                {  path: '*',
+                       method: RequestMethod.ALL});
 
         consumer
             .apply(RolesMiddleware)
-            .forRoutes({path: '*', method: RequestMethod.ALL});
+            .forRoutes(
+                {path: '*',
+                       method: RequestMethod.ALL});
     }
 }
 

@@ -12,8 +12,8 @@ async function bootstrap() {
         .setVersion('1.0')
         .addTag('Anturvoi')
         .addBearerAuth(
-            { type: 'http', scheme: 'Bearer', bearerFormat: 'JWT' },
-            'access-token',
+            { name:'Authorization',in: 'header',type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+            'accessToken'
         )
         .build();
     const document = SwaggerModule.createDocument(app, config);
